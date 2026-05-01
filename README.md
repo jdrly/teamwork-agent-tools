@@ -31,6 +31,38 @@ For personal/local use, the plugin accepts either:
 
 ## Install For Codex
 
+### Agentic Install Prompt
+
+Copy this into a trusted local agent and let it install the tool. Do not paste API tokens into shared or hosted chats you do not trust.
+
+```text
+Install Teamwork Agent Tools for Codex from https://github.com/jdrly/teamwork-agent-tools.
+
+Use the README, but do the work end-to-end:
+- install into ~/.codex/plugins/teamwork
+- update ~/.codex/config.toml
+- add the Teamwork skill entry
+- add TEAMWORK_URL, TEAMWORK_API_TOKEN, TEAMWORK_BEARER_TOKEN, and TEAMWORK_USER_AGENT under [shell_environment_policy.set] if missing
+- do not print token values
+- do not remove unrelated config
+- back up config before editing
+- run the smallest useful verification after install
+
+My Teamwork site URL is:
+PASTE_TEAMWORK_URL_HERE
+
+My Teamwork API token is:
+PASTE_TEAMWORK_API_TOKEN_HERE
+
+If the API token is enough, leave TEAMWORK_BEARER_TOKEN empty. After install, tell me whether I need to restart Codex and give me the exact auth-check command.
+```
+
+Teamwork API token location:
+
+```text
+Teamwork avatar -> Edit my details -> API & Mobile -> Show your token
+```
+
 Fast install for private repo access via GitHub CLI:
 
 ```bash
