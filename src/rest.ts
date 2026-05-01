@@ -46,7 +46,6 @@ export interface CreateCommentInput {
   taskId: number;
   body: string;
   contentType?: string;
-  notify?: boolean;
 }
 
 export interface CreateTimelogInput {
@@ -134,15 +133,16 @@ export class TeamworkClient {
   }
 
   async createComment(input: CreateCommentInput): Promise<unknown> {
-    return this.request('POST', '/projects/api/v3/comments.json', {
+    const comment: Record<string, string> = {
+      body: input.body,
+    };
+    if (input.contentType) {
+      comment['content-type'] = input.contentType.toLowerCase();
+    }
+
+    return this.request('POST', `/tasks/${input.taskId}/comments.json`, {
       comment: {
-        body: input.body,
-        contentType: input.contentType || 'TEXT',
-        notify: input.notify ?? false,
-        object: {
-          id: input.taskId,
-          type: 'tasks',
-        },
+        ...comment,
       },
     });
   }
@@ -168,16 +168,18 @@ export class TeamworkClient {
       ? `/projects/api/v3/tasks/${input.taskId}/time.json`
       : `/projects/api/v3/projects/${input.projectId}/time.json`;
 
-    return this.request('POST', target, {
-      timelog: {
-        billable: input.billable ?? false,
-        date: input.date,
-        description: input.description,
-        hours: input.hours,
-        minutes: input.minutes,
-        time: input.time || '09:00',
-      },
-    });
+    const timelog: Record<string, unknown> = {
+      isBillable: input.billable ?? false,
+      date: input.date,
+      description: input.description,
+      hours: input.hours,
+      minutes: input.minutes,
+    };
+    if (input.time) {
+      timelog.time = input.time;
+    }
+
+    return this.request('POST', target, { timelog });
   }
 
   private async request<T>(method: string, apiPath: string, body?: unknown): Promise<T> {

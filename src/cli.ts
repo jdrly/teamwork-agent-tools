@@ -260,7 +260,6 @@ async function commentCreate(
     taskId,
     body: getRequiredString(args, 'body'),
     contentType: getString(args, 'content-type'),
-    notify: getBoolean(args, 'notify'),
   });
   return {
     ok: true,
