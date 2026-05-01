@@ -1,0 +1,26 @@
+{
+  "name": "teamwork",
+  "version": "0.1.0",
+  "description": "Work with Teamwork.com tasks and projects from Codex.",
+  "author": {
+    "name": "Jan Drly"
+  },
+  "repository": "https://github.com/jdrly/teamwork-codex-plugin",
+  "license": "MIT",
+  "keywords": ["teamwork", "tasks", "projects", "productivity"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Teamwork",
+    "shortDescription": "Manage Teamwork.com tasks and projects.",
+    "longDescription": "A compact Teamwork.com workflow for Codex that uses a compiled TypeScript CLI over the REST API.",
+    "developerName": "Jan Drly",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "List my Teamwork tasks.",
+      "Show this Teamwork task with comments.",
+      "Log time to a Teamwork task."
+    ],
+    "brandColor": "#37A6FF"
+  }
+}
