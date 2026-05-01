@@ -117,6 +117,7 @@ export interface TaskSummary {
   id: number;
   name: string;
   url: string;
+  body?: string | null;
   status?: string;
   dueDate?: string | null;
   priority?: string | null;

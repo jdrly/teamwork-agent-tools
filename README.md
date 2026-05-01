@@ -40,3 +40,12 @@ node dist/cli.js tasks search "homepage"
 node dist/cli.js tasks get 24783426 --comments
 node dist/cli.js projects list --limit 10
 ```
+
+Assigned task output uses compact blocks:
+
+```text
+Project name - Task name - https://forecom.eu.teamwork.com/app/tasks/123
+Task body
+Deadline: 2026-05-01 | Priority: high
+------------------------------------
+```

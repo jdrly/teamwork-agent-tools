@@ -23,20 +23,25 @@ test('taskUrl falls back to app task URL', () => {
   assert.equal(taskUrl({ id: 42 }, 'https://base.test'), 'https://base.test/app/tasks/42');
 });
 
-test('formatTaskList uses terminal-detected link format', () => {
+test('formatTaskList uses requested block format', () => {
   const output = formatTaskList(
     [
       {
         id: 42,
         name: 'Test task',
+        description: 'Task body',
         status: 'new',
+        dueDate: '2026-05-01T00:00:00Z',
+        priority: 'high',
         meta: { webLink: 'https://base.test/app/tasks/42' },
       },
     ],
     'https://base.test',
   );
-  assert.match(output, /1\. Test task \(https:\/\/base\.test\/app\/tasks\/42\)/);
-  assert.match(output, /Status: new/);
+  assert.match(output, /^Unknown project - Test task - https:\/\/base\.test\/app\/tasks\/42/);
+  assert.match(output, /Task body/);
+  assert.match(output, /Deadline: 2026-05-01T00:00:00Z \| Priority: high/);
+  assert.match(output, /------------------------------------$/);
 });
 
 test('formatTaskList joins tasklist and project includes', () => {
@@ -59,8 +64,7 @@ test('formatTaskList joins tasklist and project includes', () => {
       },
     },
   );
-  assert.match(output, /Project: Seek \(https:\/\/base\.test\/app\/projects\/3\)/);
-  assert.match(output, /Tasklist: Sprint/);
+  assert.match(output, /Seek - Test task - https:\/\/base\.test\/app\/tasks\/42/);
 });
 
 test('formatTaskList can duplicate subtasks under their parent for table-like output', () => {
@@ -73,9 +77,9 @@ test('formatTaskList can duplicate subtasks under their parent for table-like ou
     undefined,
     { duplicateNestedSubtasks: true },
   );
-  assert.match(output, /1\. Parent \(https:\/\/base\.test\/app\/tasks\/1\)/);
-  assert.match(output, /2\. Subtask: Child \(https:\/\/base\.test\/app\/tasks\/2\)/);
-  assert.match(output, /3\. Child \(https:\/\/base\.test\/app\/tasks\/2\)/);
+  assert.match(output, /Unknown project - Parent - https:\/\/base\.test\/app\/tasks\/1/);
+  assert.match(output, /Unknown project - Subtask: Child - https:\/\/base\.test\/app\/tasks\/2/);
+  assert.match(output, /Unknown project - Child - https:\/\/base\.test\/app\/tasks\/2/);
 });
 
 test('formatProjectList uses terminal-detected link format', () => {
@@ -137,6 +141,7 @@ test('summarizeTasks returns compact list data', () => {
     id: 42,
     name: 'Test task',
     url: 'https://base.test/app/tasks/42',
+    body: undefined,
     status: 'new',
     dueDate: undefined,
     priority: undefined,

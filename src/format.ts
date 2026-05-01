@@ -25,6 +25,8 @@ export function terminalLink(label: string | number, url: string): string {
   return `${label} (${url})`;
 }
 
+const TASK_SEPARATOR = '------------------------------------';
+
 export function formatTaskList(
   tasks: TeamworkTask[],
   baseUrl: string,
@@ -35,23 +37,18 @@ export function formatTaskList(
   const summaries = summarizeTasks(tasks, baseUrl, included);
   const rows = options.duplicateNestedSubtasks ? duplicateNestedSubtasks(summaries) : summaries;
   return rows
-    .map((task, index) => {
+    .map((task) => {
+      const projectName = task.project?.name || task.project?.id || 'Unknown project';
+      const body = task.body ? stripHtml(task.body) : '';
       const lines = [
-        `${index + 1}. ${terminalLink(task.name, task.url)}`,
-        `   Status: ${task.status || 'unknown'}`,
+        `${projectName} - ${task.name} - ${task.url}`,
+        body,
+        `Deadline: ${task.dueDate || ''} | Priority: ${task.priority || ''}`,
+        TASK_SEPARATOR,
       ];
-      if (task.dueDate) lines.push(`   Due: ${task.dueDate}`);
-      if (task.priority) lines.push(`   Priority: ${task.priority}`);
-      if (task.project) {
-        lines.push(`   Project: ${terminalLink(task.project.name || task.project.id, task.project.url)}`);
-      }
-      if (task.tasklist?.id) {
-        lines.push(`   Tasklist: ${task.tasklist.name || task.tasklist.id}`);
-      }
-      if (task.parentTaskId) lines.push(`   Parent task: ${task.parentTaskId}`);
       return lines.join('\n');
     })
-    .join('\n\n');
+    .join('\n');
 }
 
 export function duplicateNestedSubtasks(tasks: TaskSummary[]): TaskSummary[] {
@@ -86,6 +83,7 @@ export function summarizeTasks(
       id: task.id,
       name: task.name,
       url: taskUrl(task, baseUrl),
+      body: task.description,
       status: task.status,
       dueDate: task.dueDate,
       priority: task.priority,
