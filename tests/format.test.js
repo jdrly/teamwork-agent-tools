@@ -10,6 +10,7 @@ import {
   stripMarkdown,
   summarizeTasks,
   taskUrl,
+  taskSeparator,
   terminalLink,
 } from '../dist/format.js';
 
@@ -38,11 +39,13 @@ test('formatTaskList uses requested block format', () => {
       },
     ],
     'https://base.test',
+    undefined,
+    { separatorWidth: 40 },
   );
   assert.match(output, /^Unknown project - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)\n\nDeadline:/);
   assert.doesNotMatch(output, /Task body/);
   assert.match(output, /Deadline: 2026-05-01T00:00:00Z \| Priority: high/);
-  assert.match(output, /────────────────────────────────────$/);
+  assert.match(output, /────────────────────────────────────────$/);
 });
 
 test('formatTaskList joins tasklist and project includes', () => {
@@ -64,6 +67,7 @@ test('formatTaskList joins tasklist and project includes', () => {
         3: { id: 3, name: 'Seek', meta: { webLink: 'https://base.test/app/projects/3' } },
       },
     },
+    { separatorWidth: 40 },
   );
   assert.match(output, /Seek - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)/);
 });
@@ -85,7 +89,7 @@ test('formatTaskList can duplicate subtasks under their parent for table-like ou
     ],
     'https://base.test',
     undefined,
-    { duplicateNestedSubtasks: true },
+    { duplicateNestedSubtasks: true, separatorWidth: 40 },
   );
   assert.match(output, /Unknown project - Parent\n\n\[Parent\]\(https:\/\/base\.test\/app\/tasks\/1\)/);
   assert.match(output, /Unknown project - Subtask: Child\n\n\[Subtask: Child\]\(https:\/\/base\.test\/app\/tasks\/2\)/);
@@ -121,6 +125,11 @@ test('markdownLink escapes closing brackets in labels', () => {
 
 test('terminalLink keeps raw URL in parentheses for terminal link detection', () => {
   assert.equal(terminalLink('Task', 'https://base.test'), 'Task (https://base.test)');
+});
+
+test('taskSeparator uses terminal width with minimum', () => {
+  assert.equal(taskSeparator(10), '────────────────────────────────────');
+  assert.equal(taskSeparator(40), '────────────────────────────────────────');
 });
 
 test('duplicateNestedSubtasks appends nested copies after parent tasks', () => {

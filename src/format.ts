@@ -25,17 +25,19 @@ export function terminalLink(label: string | number, url: string): string {
   return `${label} (${url})`;
 }
 
-const TASK_SEPARATOR = '────────────────────────────────────';
+const TASK_SEPARATOR_CHAR = '─';
+const MIN_TASK_SEPARATOR_WIDTH = 36;
 
 export function formatTaskList(
   tasks: TeamworkTask[],
   baseUrl: string,
   included?: IncludedEntities,
-  options: { duplicateNestedSubtasks?: boolean } = {},
+  options: { duplicateNestedSubtasks?: boolean; separatorWidth?: number } = {},
 ): string {
   if (tasks.length === 0) return 'No tasks found.';
   const summaries = summarizeTasks(tasks, baseUrl, included);
   const rows = options.duplicateNestedSubtasks ? duplicateNestedSubtasks(summaries) : summaries;
+  const separator = taskSeparator(options.separatorWidth);
   return rows
     .map((task) => {
       const projectName = task.project?.name || task.project?.id || 'Unknown project';
@@ -46,11 +48,18 @@ export function formatTaskList(
         '',
         formatTaskMeta(task),
         '',
-        TASK_SEPARATOR,
+        separator,
       ].filter((line, index, all) => line !== '' || all[index - 1] !== '');
       return lines.join('\n');
     })
     .join('\n');
+}
+
+export function taskSeparator(
+  width = process.stdout.columns || Number(process.env.COLUMNS) || MIN_TASK_SEPARATOR_WIDTH,
+): string {
+  const safeWidth = Math.max(MIN_TASK_SEPARATOR_WIDTH, Math.floor(width));
+  return TASK_SEPARATOR_CHAR.repeat(safeWidth);
 }
 
 function formatTaskMeta(task: TaskSummary): string {

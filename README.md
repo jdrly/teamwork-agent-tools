@@ -50,7 +50,8 @@ Project name - Task name
 
 Deadline: 2026-05-01 | Priority: high
 
-────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
 ```
 
 Empty deadline/priority fields are omitted.
+Divider spans the terminal width.
