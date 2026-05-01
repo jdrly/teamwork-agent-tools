@@ -39,8 +39,8 @@ test('formatTaskList uses requested block format', () => {
     ],
     'https://base.test',
   );
-  assert.match(output, /^Unknown project - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)\n\nTask body\n\nDeadline:/);
-  assert.match(output, /Task body/);
+  assert.match(output, /^Unknown project - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)\n\nDeadline:/);
+  assert.doesNotMatch(output, /Task body/);
   assert.match(output, /Deadline: 2026-05-01T00:00:00Z \| Priority: high/);
   assert.match(output, /------------------------------------$/);
 });

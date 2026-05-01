@@ -39,13 +39,10 @@ export function formatTaskList(
   return rows
     .map((task) => {
       const projectName = task.project?.name || task.project?.id || 'Unknown project';
-      const body = task.body ? stripMarkdown(stripHtml(task.body)) : '';
       const lines = [
         `${projectName} - ${task.name}`,
         '',
         markdownLink(task.name, task.url),
-        '',
-        body,
         '',
         formatTaskMeta(task),
         TASK_SEPARATOR,
