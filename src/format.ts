@@ -25,7 +25,7 @@ export function terminalLink(label: string | number, url: string): string {
   return `${label} (${url})`;
 }
 
-const TASK_SEPARATOR = '------------------------------------';
+const TASK_SEPARATOR = '────────────────────────────────────';
 
 export function formatTaskList(
   tasks: TeamworkTask[],
@@ -45,6 +45,7 @@ export function formatTaskList(
         markdownLink(task.name, task.url),
         '',
         formatTaskMeta(task),
+        '',
         TASK_SEPARATOR,
       ].filter((line, index, all) => line !== '' || all[index - 1] !== '');
       return lines.join('\n');

@@ -49,7 +49,8 @@ Project name - Task name
 [Task name](https://forecom.eu.teamwork.com/app/tasks/123)
 
 Deadline: 2026-05-01 | Priority: high
-------------------------------------
+
+────────────────────────────────────
 ```
 
 Empty deadline/priority fields are omitted.
