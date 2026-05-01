@@ -4,6 +4,7 @@ import {
   formatProjectList,
   formatTaskDetail,
   formatTaskList,
+  duplicateNestedSubtasks,
   markdownLink,
   stripHtml,
   summarizeTasks,
@@ -62,6 +63,21 @@ test('formatTaskList joins tasklist and project includes', () => {
   assert.match(output, /Tasklist: Sprint/);
 });
 
+test('formatTaskList can duplicate subtasks under their parent for table-like output', () => {
+  const output = formatTaskList(
+    [
+      { id: 1, name: 'Parent', status: 'new' },
+      { id: 2, name: 'Child', status: 'new', parentTaskId: 1 },
+    ],
+    'https://base.test',
+    undefined,
+    { duplicateNestedSubtasks: true },
+  );
+  assert.match(output, /1\. Parent \(https:\/\/base\.test\/app\/tasks\/1\)/);
+  assert.match(output, /2\. Subtask: Child \(https:\/\/base\.test\/app\/tasks\/2\)/);
+  assert.match(output, /3\. Child \(https:\/\/base\.test\/app\/tasks\/2\)/);
+});
+
 test('formatProjectList uses terminal-detected link format', () => {
   const output = formatProjectList(
     [{ id: 3, name: 'Seek', status: 'active', meta: { webLink: 'https://base.test/app/projects/3' } }],
@@ -91,6 +107,21 @@ test('markdownLink escapes closing brackets in labels', () => {
 
 test('terminalLink keeps raw URL in parentheses for terminal link detection', () => {
   assert.equal(terminalLink('Task', 'https://base.test'), 'Task (https://base.test)');
+});
+
+test('duplicateNestedSubtasks appends nested copies after parent tasks', () => {
+  assert.deepEqual(
+    duplicateNestedSubtasks([
+      { id: 1, name: 'Parent', url: 'https://base.test/app/tasks/1' },
+      {
+        id: 2,
+        name: 'Child',
+        url: 'https://base.test/app/tasks/2',
+        parentTaskId: 1,
+      },
+    ]).map((task) => task.name),
+    ['Parent', 'Subtask: Child', 'Child'],
+  );
 });
 
 test('summarizeTasks returns compact list data', () => {

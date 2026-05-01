@@ -29,9 +29,12 @@ export function formatTaskList(
   tasks: TeamworkTask[],
   baseUrl: string,
   included?: IncludedEntities,
+  options: { duplicateNestedSubtasks?: boolean } = {},
 ): string {
   if (tasks.length === 0) return 'No tasks found.';
-  return summarizeTasks(tasks, baseUrl, included)
+  const summaries = summarizeTasks(tasks, baseUrl, included);
+  const rows = options.duplicateNestedSubtasks ? duplicateNestedSubtasks(summaries) : summaries;
+  return rows
     .map((task, index) => {
       const lines = [
         `${index + 1}. ${terminalLink(task.name, task.url)}`,
@@ -49,6 +52,24 @@ export function formatTaskList(
       return lines.join('\n');
     })
     .join('\n\n');
+}
+
+export function duplicateNestedSubtasks(tasks: TaskSummary[]): TaskSummary[] {
+  const subtasksByParentId = new Map<number, TaskSummary[]>();
+  for (const task of tasks) {
+    if (!task.parentTaskId) continue;
+    const existing = subtasksByParentId.get(task.parentTaskId) || [];
+    existing.push({ ...task, name: `Subtask: ${task.name}` });
+    subtasksByParentId.set(task.parentTaskId, existing);
+  }
+
+  const rows: TaskSummary[] = [];
+  for (const task of tasks) {
+    rows.push(task);
+    const nestedSubtasks = subtasksByParentId.get(task.id);
+    if (nestedSubtasks) rows.push(...nestedSubtasks);
+  }
+  return rows;
 }
 
 export function summarizeTasks(

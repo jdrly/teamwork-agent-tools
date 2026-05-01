@@ -138,7 +138,9 @@ async function tasksMine(
     ok: true,
     type: 'tasks.mine',
     data: { tasks: summaries, meta: response.meta },
-    message: formatTaskList(response.tasks || [], config.baseUrl, response.included),
+    message: formatTaskList(response.tasks || [], config.baseUrl, response.included, {
+      duplicateNestedSubtasks: includeSubtasks,
+    }),
   };
 }
 
