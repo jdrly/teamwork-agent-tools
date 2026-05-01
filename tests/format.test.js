@@ -5,6 +5,7 @@ import {
   formatTaskDetail,
   formatTaskList,
   markdownLink,
+  markdownLinkWithUrl,
   stripHtml,
   summarizeTasks,
   taskUrl,
@@ -34,6 +35,7 @@ test('formatTaskList uses markdown links', () => {
     'https://base.test',
   );
   assert.match(output, /1\. \[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)/);
+  assert.match(output, /\n   https:\/\/base\.test\/app\/tasks\/42/);
   assert.match(output, /Status: new/);
 });
 
@@ -58,6 +60,7 @@ test('formatTaskList joins tasklist and project includes', () => {
     },
   );
   assert.match(output, /Project: \[Seek\]\(https:\/\/base\.test\/app\/projects\/3\)/);
+  assert.match(output, /\n   https:\/\/base\.test\/app\/projects\/3/);
   assert.match(output, /Tasklist: Sprint/);
 });
 
@@ -67,6 +70,7 @@ test('formatProjectList uses markdown links', () => {
     'https://base.test',
   );
   assert.match(output, /1\. \[Seek\]\(https:\/\/base\.test\/app\/projects\/3\)/);
+  assert.match(output, /\n   https:\/\/base\.test\/app\/projects\/3/);
   assert.match(output, /Status: active/);
 });
 
@@ -81,11 +85,20 @@ test('formatTaskDetail uses markdown links', () => {
     },
   );
   assert.match(output, /^\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)/);
+  assert.match(output, /\n   https:\/\/base\.test\/app\/tasks\/42/);
   assert.match(output, /Project: \[Seek\]\(https:\/\/base\.test\/app\/projects\/3\)/);
+  assert.match(output, /\nhttps:\/\/base\.test\/app\/projects\/3/);
 });
 
 test('markdownLink escapes closing brackets in labels', () => {
   assert.equal(markdownLink('Task ] name', 'https://base.test'), '[Task \\] name](https://base.test)');
+});
+
+test('markdownLinkWithUrl includes raw URL for terminal link detection', () => {
+  assert.equal(
+    markdownLinkWithUrl('Task', 'https://base.test'),
+    '[Task](https://base.test)\n   https://base.test',
+  );
 });
 
 test('summarizeTasks returns compact list data', () => {

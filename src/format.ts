@@ -21,6 +21,10 @@ export function markdownLink(label: string | number, url: string): string {
   return `[${safeLabel}](${url})`;
 }
 
+export function markdownLinkWithUrl(label: string | number, url: string): string {
+  return `${markdownLink(label, url)}\n   ${url}`;
+}
+
 export function formatTaskList(
   tasks: TeamworkTask[],
   baseUrl: string,
@@ -30,13 +34,14 @@ export function formatTaskList(
   return summarizeTasks(tasks, baseUrl, included)
     .map((task, index) => {
       const lines = [
-        `${index + 1}. ${markdownLink(task.name, task.url)}`,
+        `${index + 1}. ${markdownLinkWithUrl(task.name, task.url)}`,
         `   Status: ${task.status || 'unknown'}`,
       ];
       if (task.dueDate) lines.push(`   Due: ${task.dueDate}`);
       if (task.priority) lines.push(`   Priority: ${task.priority}`);
       if (task.project) {
         lines.push(`   Project: ${markdownLink(task.project.name || task.project.id, task.project.url)}`);
+        lines.push(`   ${task.project.url}`);
       }
       if (task.tasklist?.id) {
         lines.push(`   Tasklist: ${task.tasklist.name || task.tasklist.id}`);
@@ -89,7 +94,7 @@ export function formatProjectList(projects: TeamworkProject[], baseUrl: string):
   return projects
     .map((project, index) => {
       const lines = [
-        `${index + 1}. ${markdownLink(project.name, projectUrl(project, baseUrl))}`,
+        `${index + 1}. ${markdownLinkWithUrl(project.name, projectUrl(project, baseUrl))}`,
       ];
       if (project.status) lines.push(`   Status: ${project.status}`);
       return lines.join('\n');
@@ -105,7 +110,7 @@ export function formatTaskDetail(
 ): string {
   const [summary] = summarizeTasks([task], baseUrl, included);
   const lines = [
-    markdownLink(task.name, taskUrl(task, baseUrl)),
+    markdownLinkWithUrl(task.name, taskUrl(task, baseUrl)),
     `ID: ${task.id}`,
     `Status: ${task.status || 'unknown'}`,
   ];
@@ -113,6 +118,7 @@ export function formatTaskDetail(
   if (task.priority) lines.push(`Priority: ${task.priority}`);
   if (summary.project) {
     lines.push(`Project: ${markdownLink(summary.project.name || summary.project.id, summary.project.url)}`);
+    lines.push(summary.project.url);
   }
   if (summary.tasklist?.id) lines.push(`Tasklist: ${summary.tasklist.name || summary.tasklist.id}`);
   if (summary.parentTaskId) lines.push(`Parent task: ${summary.parentTaskId}`);
