@@ -5,10 +5,10 @@ import {
   formatTaskDetail,
   formatTaskList,
   markdownLink,
-  markdownLinkWithUrl,
   stripHtml,
   summarizeTasks,
   taskUrl,
+  terminalLink,
 } from '../dist/format.js';
 
 test('taskUrl prefers Teamwork webLink metadata', () => {
@@ -22,7 +22,7 @@ test('taskUrl falls back to app task URL', () => {
   assert.equal(taskUrl({ id: 42 }, 'https://base.test'), 'https://base.test/app/tasks/42');
 });
 
-test('formatTaskList uses markdown links', () => {
+test('formatTaskList uses terminal-detected link format', () => {
   const output = formatTaskList(
     [
       {
@@ -34,8 +34,7 @@ test('formatTaskList uses markdown links', () => {
     ],
     'https://base.test',
   );
-  assert.match(output, /1\. \[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)/);
-  assert.match(output, /\n   https:\/\/base\.test\/app\/tasks\/42/);
+  assert.match(output, /1\. Test task \(https:\/\/base\.test\/app\/tasks\/42\)/);
   assert.match(output, /Status: new/);
 });
 
@@ -59,22 +58,20 @@ test('formatTaskList joins tasklist and project includes', () => {
       },
     },
   );
-  assert.match(output, /Project: \[Seek\]\(https:\/\/base\.test\/app\/projects\/3\)/);
-  assert.match(output, /\n   https:\/\/base\.test\/app\/projects\/3/);
+  assert.match(output, /Project: Seek \(https:\/\/base\.test\/app\/projects\/3\)/);
   assert.match(output, /Tasklist: Sprint/);
 });
 
-test('formatProjectList uses markdown links', () => {
+test('formatProjectList uses terminal-detected link format', () => {
   const output = formatProjectList(
     [{ id: 3, name: 'Seek', status: 'active', meta: { webLink: 'https://base.test/app/projects/3' } }],
     'https://base.test',
   );
-  assert.match(output, /1\. \[Seek\]\(https:\/\/base\.test\/app\/projects\/3\)/);
-  assert.match(output, /\n   https:\/\/base\.test\/app\/projects\/3/);
+  assert.match(output, /1\. Seek \(https:\/\/base\.test\/app\/projects\/3\)/);
   assert.match(output, /Status: active/);
 });
 
-test('formatTaskDetail uses markdown links', () => {
+test('formatTaskDetail uses terminal-detected link format', () => {
   const output = formatTaskDetail(
     { id: 42, name: 'Test task', status: 'new', tasklistId: 7 },
     'https://base.test',
@@ -84,21 +81,16 @@ test('formatTaskDetail uses markdown links', () => {
       projects: { 3: { id: 3, name: 'Seek' } },
     },
   );
-  assert.match(output, /^\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)/);
-  assert.match(output, /\n   https:\/\/base\.test\/app\/tasks\/42/);
-  assert.match(output, /Project: \[Seek\]\(https:\/\/base\.test\/app\/projects\/3\)/);
-  assert.match(output, /\nhttps:\/\/base\.test\/app\/projects\/3/);
+  assert.match(output, /^Test task \(https:\/\/base\.test\/app\/tasks\/42\)/);
+  assert.match(output, /Project: Seek \(https:\/\/base\.test\/app\/projects\/3\)/);
 });
 
 test('markdownLink escapes closing brackets in labels', () => {
   assert.equal(markdownLink('Task ] name', 'https://base.test'), '[Task \\] name](https://base.test)');
 });
 
-test('markdownLinkWithUrl includes raw URL for terminal link detection', () => {
-  assert.equal(
-    markdownLinkWithUrl('Task', 'https://base.test'),
-    '[Task](https://base.test)\n   https://base.test',
-  );
+test('terminalLink keeps raw URL in parentheses for terminal link detection', () => {
+  assert.equal(terminalLink('Task', 'https://base.test'), 'Task (https://base.test)');
 });
 
 test('summarizeTasks returns compact list data', () => {
