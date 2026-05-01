@@ -39,10 +39,14 @@ export function formatTaskList(
   return rows
     .map((task) => {
       const projectName = task.project?.name || task.project?.id || 'Unknown project';
-      const body = task.body ? stripHtml(task.body) : '';
+      const body = task.body ? stripMarkdown(stripHtml(task.body)) : '';
       const lines = [
-        `${projectName} - ${task.name} - ${task.url}`,
+        `${projectName} - ${task.name}`,
+        '',
+        task.url,
+        '',
         body,
+        '',
         `Deadline: ${task.dueDate || ''} | Priority: ${task.priority || ''}`,
         TASK_SEPARATOR,
       ];
@@ -183,5 +187,21 @@ export function stripHtml(value: string): string {
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    .trim();
+}
+
+export function stripMarkdown(value: string): string {
+  return value
+    .replace(/\\n/g, '\n')
+    .replace(/\\\n/g, '\n')
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '$1 $2')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 $2')
+    .replace(/\\([\\`*_{}\[\]()#+\-.!|>])/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\\?\.\s+/gm, '')
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    .replace(/`([^`]+)`/g, '$1')
     .trim();
 }

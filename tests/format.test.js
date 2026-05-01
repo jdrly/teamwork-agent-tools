@@ -7,6 +7,7 @@ import {
   duplicateNestedSubtasks,
   markdownLink,
   stripHtml,
+  stripMarkdown,
   summarizeTasks,
   taskUrl,
   terminalLink,
@@ -38,7 +39,7 @@ test('formatTaskList uses requested block format', () => {
     ],
     'https://base.test',
   );
-  assert.match(output, /^Unknown project - Test task - https:\/\/base\.test\/app\/tasks\/42/);
+  assert.match(output, /^Unknown project - Test task\n\nhttps:\/\/base\.test\/app\/tasks\/42\n\nTask body\n\nDeadline:/);
   assert.match(output, /Task body/);
   assert.match(output, /Deadline: 2026-05-01T00:00:00Z \| Priority: high/);
   assert.match(output, /------------------------------------$/);
@@ -64,7 +65,7 @@ test('formatTaskList joins tasklist and project includes', () => {
       },
     },
   );
-  assert.match(output, /Seek - Test task - https:\/\/base\.test\/app\/tasks\/42/);
+  assert.match(output, /Seek - Test task\n\nhttps:\/\/base\.test\/app\/tasks\/42/);
 });
 
 test('formatTaskList can duplicate subtasks under their parent for table-like output', () => {
@@ -77,9 +78,9 @@ test('formatTaskList can duplicate subtasks under their parent for table-like ou
     undefined,
     { duplicateNestedSubtasks: true },
   );
-  assert.match(output, /Unknown project - Parent - https:\/\/base\.test\/app\/tasks\/1/);
-  assert.match(output, /Unknown project - Subtask: Child - https:\/\/base\.test\/app\/tasks\/2/);
-  assert.match(output, /Unknown project - Child - https:\/\/base\.test\/app\/tasks\/2/);
+  assert.match(output, /Unknown project - Parent\n\nhttps:\/\/base\.test\/app\/tasks\/1/);
+  assert.match(output, /Unknown project - Subtask: Child\n\nhttps:\/\/base\.test\/app\/tasks\/2/);
+  assert.match(output, /Unknown project - Child\n\nhttps:\/\/base\.test\/app\/tasks\/2/);
 });
 
 test('formatProjectList uses terminal-detected link format', () => {
@@ -152,4 +153,11 @@ test('summarizeTasks returns compact list data', () => {
 
 test('stripHtml handles simple Teamwork rich text', () => {
   assert.equal(stripHtml('<p>Hello&nbsp;<strong>world</strong></p>'), 'Hello world');
+});
+
+test('stripMarkdown removes common body styling', () => {
+  assert.equal(
+    stripMarkdown('**Done** [link](https://example.test) ![img](https://img.test/a.png)\\n1\\. Item'),
+    'Done link https://example.test img https://img.test/a.png\nItem',
+  );
 });

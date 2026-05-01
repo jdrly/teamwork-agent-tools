@@ -71,8 +71,12 @@ Follow Freelo-style entity clarity. Every existing Teamwork entity mentioned in 
 For assigned task/subtask output, use this block format:
 
 ```text
-Project name - Task name - https://forecom.eu.teamwork.com/app/tasks/123
+Project name - Task name
+
+https://forecom.eu.teamwork.com/app/tasks/123
+
 Task body
+
 Deadline: 2026-05-01 | Priority: high
 ------------------------------------
 ```
