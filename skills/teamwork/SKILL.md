@@ -56,6 +56,8 @@ node /Users/jd/.codex/plugins/teamwork/dist/cli.js projects list --limit 20 --js
 
 Confirm before destructive actions. Creating tasks, comments, and timelogs is not destructive but still echo the target in the final response.
 
+When copying a body/description from another system into a Teamwork comment, post the copied content directly. Do not add labels or prefixes such as "Freelo body copy:" unless the user explicitly asks for that wording.
+
 ```bash
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks create --tasklist-id 123 --name "Task name" --description "Details" --json
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js subtasks create --task-id 123 --name "Subtask name" --json

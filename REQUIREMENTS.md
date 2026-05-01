@@ -325,6 +325,8 @@ Destructive actions requiring confirmation:
 - Delete project.
 - Any force-delete operation.
 
+When copying task bodies/descriptions from another system into Teamwork comments, post the copied body directly. Do not add labels or prefixes such as "Freelo body copy:" unless the user explicitly asks for that wording.
+
 ### Output Contract
 
 Follow the Freelo skill pattern: every existing Teamwork entity mentioned in final responses should include a useful link. Because the user is in terminal/Codex, default to terminal-safe two-line link format when listing entities:
