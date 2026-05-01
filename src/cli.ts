@@ -81,7 +81,7 @@ function help(): CliResult {
       '  auth check [--json]',
       '  bootstrap [--json]',
       '  cache show|clear [--json]',
-      '  tasks mine [--limit 20] [--page 1] [--subtasks] [--json]',
+      '  tasks mine [--limit 20] [--page 1] [--top-level] [--json]',
       '  tasks search <query> [--limit 20] [--subtasks] [--json]',
       '  tasks get <id> [--comments] [--json]',
       '  tasks create --tasklist-id <id> --name <name> [--description text] [--json]',
@@ -124,10 +124,11 @@ async function tasksMine(
   const currentUserId = await getCurrentUserId(config, client);
   const pageSize = getNumber(args, 'limit') || getNumber(args, 'page-size') || 20;
   const page = getNumber(args, 'page') || 1;
+  const includeSubtasks = !getBoolean(args, 'top-level');
   const response = await client.listTasks({
     responsiblePartyIds: [currentUserId],
-    getSubTasks: getBoolean(args, 'subtasks'),
-    nestSubTasks: getBoolean(args, 'subtasks'),
+    getSubTasks: includeSubtasks,
+    nestSubTasks: includeSubtasks,
     include: ['tasklists', 'projects'],
     page,
     pageSize,

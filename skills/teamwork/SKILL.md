@@ -36,11 +36,11 @@ This validates auth and caches current user metadata. The cache is an optimizati
 # Auth/current user
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js auth check --json
 
-# My assigned top-level work
+# My assigned work, matching Teamwork table by including subtasks
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 20 --json
 
-# Include assigned subtasks when needed
-node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 20 --subtasks --json
+# Smaller top-level-only view
+node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 20 --top-level --json
 
 # Search tasks
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks search "query" --json
