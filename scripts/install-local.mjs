@@ -1,9 +1,11 @@
 import { cp, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import os from 'node:os';
 import path from 'node:path';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const target = '/Users/jd/.codex/plugins/teamwork';
+const codexHome = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
+const target = path.join(codexHome, 'plugins', 'teamwork');
 
 await rm(target, { recursive: true, force: true });
 await mkdir(target, { recursive: true });

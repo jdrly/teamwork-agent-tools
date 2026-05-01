@@ -31,6 +31,14 @@ For personal/local use, the plugin accepts either:
 
 ## Install For Codex
 
+Fast install:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jdrly/teamwork-codex-plugin/main/install.sh | bash
+```
+
+Safer install:
+
 Clone the repo:
 
 ```bash
@@ -117,6 +125,39 @@ Then test assigned tasks:
 ```bash
 node ~/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 10
 ```
+
+## Claude Code Adapter
+
+Claude Code support is experimental and untested by this repo owner. The shared Teamwork CLI is the same, but the adapter installs a Claude Code skill instead of a Codex skill.
+
+Official Claude Code docs used for adapter shape:
+
+- https://code.claude.com/docs/en/slash-commands
+- https://code.claude.com/docs/en/settings
+
+Install from a local checkout:
+
+```bash
+./install-claude-code.sh
+```
+
+This copies:
+
+```text
+~/.claude/teamwork-codex-plugin
+~/.claude/skills/teamwork/SKILL.md
+```
+
+Start Claude Code with the same Teamwork environment variables exported:
+
+```bash
+export TEAMWORK_URL="https://your-site.teamwork.com"
+export TEAMWORK_BEARER_TOKEN="your-bearer-token"
+export TEAMWORK_API_TOKEN="your-api-token"
+export TEAMWORK_USER_AGENT="Claude-Code-Teamwork-Plugin/0.1"
+```
+
+No Claude Code runtime validation has been performed here.
 
 ## CLI
 
