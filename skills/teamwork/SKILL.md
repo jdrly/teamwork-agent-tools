@@ -68,13 +68,15 @@ node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks complete 123 --json
 
 Follow Freelo-style entity clarity. Every existing Teamwork entity mentioned in final responses should include a link.
 
-Prefer terminal-detected links for Teamwork entities. Keep the raw URL in parentheses after the entity name so Ghostty/tmux can detect it.
+For final chat responses, use real Markdown links so Codex renders clickable highlighted links:
 
 ```text
-1. Task name (https://forecom.eu.teamwork.com/app/tasks/123)
-   Project: Project name (https://forecom.eu.teamwork.com/app/projects/456)
+1. [Task name](https://forecom.eu.teamwork.com/app/tasks/123)
+   Project: [Project name](https://forecom.eu.teamwork.com/app/projects/456)
    Due: 2026-05-01
    Status: active
 ```
+
+For raw CLI output, terminal-detected `Task name (https://...)` is acceptable. Do not paste raw CLI output into final chat if Markdown links are expected.
 
 Never print token values.
