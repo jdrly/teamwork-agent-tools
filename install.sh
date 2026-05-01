@@ -92,7 +92,11 @@ if [ -d "$SOURCE_DIR/.git" ]; then
   git -C "$SOURCE_DIR" pull --ff-only
 else
   rm -rf "$SOURCE_DIR"
-  git clone "$REPO_URL" "$SOURCE_DIR"
+  if [ "$REPO_URL" = "https://github.com/jdrly/teamwork-agent-tools.git" ] && command -v gh >/dev/null 2>&1; then
+    gh repo clone jdrly/teamwork-agent-tools "$SOURCE_DIR"
+  else
+    git clone "$REPO_URL" "$SOURCE_DIR"
+  fi
 fi
 
 cd "$SOURCE_DIR"
