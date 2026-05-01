@@ -36,8 +36,11 @@ This validates auth and caches current user metadata. The cache is an optimizati
 # Auth/current user
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js auth check --json
 
-# My assigned work, including subtasks where the API returns them
+# My assigned top-level work
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 20 --json
+
+# Include assigned subtasks when needed
+node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 20 --subtasks --json
 
 # Search tasks
 node /Users/jd/.codex/plugins/teamwork/dist/cli.js tasks search "query" --json
@@ -78,4 +81,3 @@ Prefer terminal-safe two-line format for lists:
 Markdown links are acceptable for short confirmations when link text is preserved.
 
 Never print token values.
-

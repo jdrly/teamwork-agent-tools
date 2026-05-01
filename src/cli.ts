@@ -8,6 +8,7 @@ import {
   formatProjectList,
   formatTaskDetail,
   formatTaskList,
+  summarizeTasks,
 } from './format.js';
 import { TeamworkApiError, TeamworkClient } from './rest.js';
 import type { CliResult } from './types.js';
@@ -80,8 +81,8 @@ function help(): CliResult {
       '  auth check [--json]',
       '  bootstrap [--json]',
       '  cache show|clear [--json]',
-      '  tasks mine [--limit 20] [--page 1] [--json]',
-      '  tasks search <query> [--limit 20] [--json]',
+      '  tasks mine [--limit 20] [--page 1] [--subtasks] [--json]',
+      '  tasks search <query> [--limit 20] [--subtasks] [--json]',
       '  tasks get <id> [--comments] [--json]',
       '  tasks create --tasklist-id <id> --name <name> [--description text] [--json]',
       '  tasks complete <id> [--json]',
@@ -125,16 +126,18 @@ async function tasksMine(
   const page = getNumber(args, 'page') || 1;
   const response = await client.listTasks({
     responsiblePartyIds: [currentUserId],
-    getSubTasks: true,
-    nestSubTasks: true,
+    getSubTasks: getBoolean(args, 'subtasks'),
+    nestSubTasks: getBoolean(args, 'subtasks'),
+    include: ['tasklists', 'projects'],
     page,
     pageSize,
   });
+  const summaries = summarizeTasks(response.tasks || [], config.baseUrl, response.included);
   return {
     ok: true,
     type: 'tasks.mine',
-    data: response,
-    message: formatTaskList(response.tasks || [], config.baseUrl),
+    data: { tasks: summaries, meta: response.meta },
+    message: formatTaskList(response.tasks || [], config.baseUrl, response.included),
   };
 }
 
@@ -149,13 +152,16 @@ async function tasksSearch(
     searchTerm: query,
     pageSize,
     page: getNumber(args, 'page') || 1,
-    getSubTasks: true,
+    getSubTasks: getBoolean(args, 'subtasks'),
+    nestSubTasks: getBoolean(args, 'subtasks'),
+    include: ['tasklists', 'projects'],
   });
+  const summaries = summarizeTasks(response.tasks || [], config.baseUrl, response.included);
   return {
     ok: true,
     type: 'tasks.search',
-    data: response,
-    message: formatTaskList(response.tasks || [], config.baseUrl),
+    data: { tasks: summaries, meta: response.meta },
+    message: formatTaskList(response.tasks || [], config.baseUrl, response.included),
   };
 }
 
@@ -166,7 +172,7 @@ async function taskGet(
   args: ReturnType<typeof parseArgs>,
 ): Promise<CliResult> {
   assertId(id, 'task id');
-  const response = await client.getTask(id);
+  const response = await client.getTask(id, { include: ['tasklists', 'projects'] });
   const comments = getBoolean(args, 'comments')
     ? (await client.listTaskComments(id)).comments
     : undefined;
@@ -174,7 +180,7 @@ async function taskGet(
     ok: true,
     type: 'tasks.get',
     data: { ...response, comments },
-    message: formatTaskDetail(response.task, config.baseUrl, comments),
+    message: formatTaskDetail(response.task, config.baseUrl, comments, response.included),
   };
 }
 

@@ -35,8 +35,8 @@ The CLI never prints token values.
 node dist/cli.js auth check
 node dist/cli.js bootstrap
 node dist/cli.js tasks mine --limit 10
+node dist/cli.js tasks mine --limit 10 --subtasks
 node dist/cli.js tasks search "homepage"
 node dist/cli.js tasks get 24783426 --comments
 node dist/cli.js projects list --limit 10
 ```
-

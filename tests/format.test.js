@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { formatTaskList, stripHtml, taskUrl } from '../dist/format.js';
+import { formatTaskList, stripHtml, summarizeTasks, taskUrl } from '../dist/format.js';
 
 test('taskUrl prefers Teamwork webLink metadata', () => {
   assert.equal(
@@ -30,7 +30,52 @@ test('formatTaskList uses terminal-safe name plus URL format', () => {
   assert.match(output, /Status: new/);
 });
 
+test('formatTaskList joins tasklist and project includes', () => {
+  const output = formatTaskList(
+    [
+      {
+        id: 42,
+        name: 'Test task',
+        status: 'new',
+        tasklist: { id: 7, type: 'tasklists' },
+      },
+    ],
+    'https://base.test',
+    {
+      tasklists: {
+        7: { id: 7, name: 'Sprint', projectId: 3 },
+      },
+      projects: {
+        3: { id: 3, name: 'Seek', meta: { webLink: 'https://base.test/app/projects/3' } },
+      },
+    },
+  );
+  assert.match(output, /Project: Seek/);
+  assert.match(output, /https:\/\/base\.test\/app\/projects\/3/);
+  assert.match(output, /Tasklist: Sprint/);
+});
+
+test('summarizeTasks returns compact list data', () => {
+  const [summary] = summarizeTasks(
+    [{ id: 42, name: 'Test task', status: 'new', tasklistId: 7 }],
+    'https://base.test',
+    {
+      tasklists: { 7: { id: 7, name: 'Sprint', projectId: 3 } },
+      projects: { 3: { id: 3, name: 'Seek' } },
+    },
+  );
+  assert.deepEqual(summary, {
+    id: 42,
+    name: 'Test task',
+    url: 'https://base.test/app/tasks/42',
+    status: 'new',
+    dueDate: undefined,
+    priority: undefined,
+    tasklist: { id: 7, name: 'Sprint' },
+    project: { id: 3, name: 'Seek', url: 'https://base.test/app/projects/3' },
+  });
+});
+
 test('stripHtml handles simple Teamwork rich text', () => {
   assert.equal(stripHtml('<p>Hello&nbsp;<strong>world</strong></p>'), 'Hello world');
 });
-

@@ -1,4 +1,12 @@
-import type { CacheData, CliResult, TeamworkComment, TeamworkProject, TeamworkTask } from './types.js';
+import type {
+  CacheData,
+  CliResult,
+  IncludedEntities,
+  TaskSummary,
+  TeamworkComment,
+  TeamworkProject,
+  TeamworkTask,
+} from './types.js';
 
 export function taskUrl(task: Pick<TeamworkTask, 'id' | 'meta'>, baseUrl: string): string {
   return task.meta?.webLink || `${baseUrl}/app/tasks/${task.id}`;
@@ -8,22 +16,69 @@ export function projectUrl(project: Pick<TeamworkProject, 'id' | 'meta'>, baseUr
   return project.meta?.webLink || `${baseUrl}/app/projects/${project.id}`;
 }
 
-export function formatTaskList(tasks: TeamworkTask[], baseUrl: string): string {
+export function formatTaskList(
+  tasks: TeamworkTask[],
+  baseUrl: string,
+  included?: IncludedEntities,
+): string {
   if (tasks.length === 0) return 'No tasks found.';
-  return tasks
+  return summarizeTasks(tasks, baseUrl, included)
     .map((task, index) => {
       const lines = [
         `${index + 1}. ${task.name}`,
-        `   ${taskUrl(task, baseUrl)}`,
+        `   ${task.url}`,
         `   Status: ${task.status || 'unknown'}`,
       ];
       if (task.dueDate) lines.push(`   Due: ${task.dueDate}`);
       if (task.priority) lines.push(`   Priority: ${task.priority}`);
-      if (task.tasklist?.id) lines.push(`   Tasklist: ${task.tasklist.id}`);
-      if (task.parentTask?.id) lines.push(`   Parent task: ${task.parentTask.id}`);
+      if (task.project) {
+        lines.push(`   Project: ${task.project.name || task.project.id}`);
+        lines.push(`   ${task.project.url}`);
+      }
+      if (task.tasklist?.id) {
+        lines.push(`   Tasklist: ${task.tasklist.name || task.tasklist.id}`);
+      }
+      if (task.parentTaskId) lines.push(`   Parent task: ${task.parentTaskId}`);
       return lines.join('\n');
     })
     .join('\n\n');
+}
+
+export function summarizeTasks(
+  tasks: TeamworkTask[],
+  baseUrl: string,
+  included?: IncludedEntities,
+): TaskSummary[] {
+  return tasks.map((task) => {
+    const tasklistId = task.tasklist?.id || task.tasklistId;
+    const tasklist = tasklistId ? included?.tasklists?.[String(tasklistId)] : undefined;
+    const projectId = tasklist?.project?.id || tasklist?.projectId;
+    const project = projectId ? included?.projects?.[String(projectId)] : undefined;
+    const summary: TaskSummary = {
+      id: task.id,
+      name: task.name,
+      url: taskUrl(task, baseUrl),
+      status: task.status,
+      dueDate: task.dueDate,
+      priority: task.priority,
+    };
+    if (tasklistId) {
+      summary.tasklist = {
+        id: tasklistId,
+        name: tasklist?.name,
+      };
+    }
+    if (projectId) {
+      summary.project = {
+        id: projectId,
+        name: project?.name,
+        url: project ? projectUrl(project, baseUrl) : `${baseUrl}/app/projects/${projectId}`,
+      };
+    }
+    const parentTaskId = task.parentTask?.id || task.parentTaskId || undefined;
+    if (parentTaskId) summary.parentTaskId = parentTaskId;
+    return summary;
+  });
 }
 
 export function formatProjectList(projects: TeamworkProject[], baseUrl: string): string {
@@ -44,7 +99,9 @@ export function formatTaskDetail(
   task: TeamworkTask,
   baseUrl: string,
   comments?: TeamworkComment[],
+  included?: IncludedEntities,
 ): string {
+  const [summary] = summarizeTasks([task], baseUrl, included);
   const lines = [
     task.name,
     taskUrl(task, baseUrl),
@@ -53,8 +110,12 @@ export function formatTaskDetail(
   ];
   if (task.dueDate) lines.push(`Due: ${task.dueDate}`);
   if (task.priority) lines.push(`Priority: ${task.priority}`);
-  if (task.tasklist?.id) lines.push(`Tasklist: ${task.tasklist.id}`);
-  if (task.parentTask?.id) lines.push(`Parent task: ${task.parentTask.id}`);
+  if (summary.project) {
+    lines.push(`Project: ${summary.project.name || summary.project.id}`);
+    lines.push(summary.project.url);
+  }
+  if (summary.tasklist?.id) lines.push(`Tasklist: ${summary.tasklist.name || summary.tasklist.id}`);
+  if (summary.parentTaskId) lines.push(`Parent task: ${summary.parentTaskId}`);
   if (task.description) lines.push(`Description:\n${stripHtml(task.description)}`);
   if (comments) {
     lines.push(`Comments: ${comments.length}`);
@@ -101,4 +162,3 @@ export function stripHtml(value: string): string {
     .replace(/&gt;/g, '>')
     .trim();
 }
-

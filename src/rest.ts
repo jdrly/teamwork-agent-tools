@@ -2,6 +2,7 @@ import type {
   PageMeta,
   TeamworkComment,
   TeamworkConfig,
+  IncludedEntities,
   TeamworkPerson,
   TeamworkProject,
   TeamworkTask,
@@ -17,6 +18,7 @@ export interface ListTasksOptions {
   getSubTasks?: boolean;
   nestSubTasks?: boolean;
   includeCompletedTasks?: boolean;
+  include?: string[];
 }
 
 export interface ListProjectsOptions {
@@ -68,7 +70,7 @@ export class TeamworkClient {
   async listTasks(options: ListTasksOptions = {}): Promise<{
     tasks: TeamworkTask[];
     meta?: PageMeta;
-    included?: unknown;
+    included?: IncludedEntities;
   }> {
     const query = new URLSearchParams();
     appendNumberList(query, 'responsiblePartyIds', options.responsiblePartyIds);
@@ -80,11 +82,19 @@ export class TeamworkClient {
     appendBoolean(query, 'getSubTasks', options.getSubTasks);
     appendBoolean(query, 'nestSubTasks', options.nestSubTasks);
     appendBoolean(query, 'includeCompletedTasks', options.includeCompletedTasks);
+    appendStringList(query, 'include', options.include);
     return this.request('GET', `/projects/api/v3/tasks.json?${query.toString()}`);
   }
 
-  async getTask(id: number): Promise<{ task: TeamworkTask; included?: unknown; meta?: PageMeta }> {
-    return this.request('GET', `/projects/api/v3/tasks/${id}.json`);
+  async getTask(id: number, options: { include?: string[] } = {}): Promise<{
+    task: TeamworkTask;
+    included?: IncludedEntities;
+    meta?: PageMeta;
+  }> {
+    const query = new URLSearchParams();
+    appendStringList(query, 'include', options.include);
+    const suffix = query.size ? `?${query.toString()}` : '';
+    return this.request('GET', `/projects/api/v3/tasks/${id}.json${suffix}`);
   }
 
   async listTaskComments(taskId: number): Promise<{
@@ -244,6 +254,10 @@ function taskPayload(input: Omit<CreateTaskInput, 'tasklistId'>): Record<string,
 
 function appendString(query: URLSearchParams, name: string, value: string | undefined): void {
   if (value !== undefined && value !== '') query.set(name, value);
+}
+
+function appendStringList(query: URLSearchParams, name: string, values: string[] | undefined): void {
+  if (values?.length) query.set(name, values.join(','));
 }
 
 function appendNumber(query: URLSearchParams, name: string, value: number | undefined): void {

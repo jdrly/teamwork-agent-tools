@@ -34,7 +34,9 @@ export interface TeamworkTask {
   assignees?: TeamworkRef[] | null;
   tags?: unknown[] | null;
   tasklist?: TeamworkRef | null;
+  tasklistId?: number;
   parentTask?: TeamworkRef | null;
+  parentTaskId?: number;
   createdAt?: string;
   updatedAt?: string;
   meta?: {
@@ -97,3 +99,35 @@ export interface CliResult {
   data?: unknown;
 }
 
+export interface IncludedEntities {
+  projects?: Record<string, TeamworkProject>;
+  tasklists?: Record<string, TeamworkTasklist>;
+  [key: string]: unknown;
+}
+
+export interface TeamworkTasklist {
+  id: number;
+  name?: string;
+  projectId?: number;
+  project?: TeamworkRef | null;
+  [key: string]: unknown;
+}
+
+export interface TaskSummary {
+  id: number;
+  name: string;
+  url: string;
+  status?: string;
+  dueDate?: string | null;
+  priority?: string | null;
+  tasklist?: {
+    id: number;
+    name?: string;
+  };
+  project?: {
+    id: number;
+    name?: string;
+    url: string;
+  };
+  parentTaskId?: number;
+}
