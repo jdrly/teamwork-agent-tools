@@ -168,6 +168,33 @@ node ~/.codex/plugins/teamwork/dist/cli.js tasks mine --limit 10
 
 Claude Code support is experimental and untested by this repo owner. The shared Teamwork CLI is the same, but the adapter installs a Claude Code skill instead of a Codex skill.
 
+### Claude Code Agentic Install Prompt
+
+Copy this into a trusted local Claude Code session and let it install the tool. Do not paste API tokens into shared or hosted chats you do not trust.
+
+```text
+Install Teamwork Agent Tools for Claude Code from https://github.com/jdrly/teamwork-agent-tools.
+
+Use the README, but do the work end-to-end:
+- clone the repo
+- run ./install-claude-code.sh
+- install the runtime into ~/.claude/teamwork-agent-tools
+- install the skill into ~/.claude/skills/teamwork/SKILL.md
+- configure or explain how to export TEAMWORK_URL, TEAMWORK_API_TOKEN, TEAMWORK_BEARER_TOKEN, and TEAMWORK_USER_AGENT
+- do not print token values
+- do not remove unrelated Claude Code config
+- run the smallest useful verification after install if environment variables are available
+- be explicit that Claude Code support is experimental if runtime behavior cannot be verified
+
+My Teamwork site URL is:
+PASTE_TEAMWORK_URL_HERE
+
+My Teamwork API token is:
+PASTE_TEAMWORK_API_TOKEN_HERE
+
+If the API token is enough, leave TEAMWORK_BEARER_TOKEN empty. After install, tell me whether I need to restart Claude Code and give me the exact auth-check command.
+```
+
 Official Claude Code docs used for adapter shape:
 
 - https://code.claude.com/docs/en/slash-commands
