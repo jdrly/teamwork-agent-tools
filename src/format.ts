@@ -43,7 +43,7 @@ export function formatTaskList(
       const lines = [
         `${projectName} - ${task.name}`,
         '',
-        task.url,
+        markdownLink(task.name, task.url),
         '',
         body,
         '',

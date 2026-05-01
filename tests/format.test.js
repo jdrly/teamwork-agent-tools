@@ -39,7 +39,7 @@ test('formatTaskList uses requested block format', () => {
     ],
     'https://base.test',
   );
-  assert.match(output, /^Unknown project - Test task\n\nhttps:\/\/base\.test\/app\/tasks\/42\n\nTask body\n\nDeadline:/);
+  assert.match(output, /^Unknown project - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)\n\nTask body\n\nDeadline:/);
   assert.match(output, /Task body/);
   assert.match(output, /Deadline: 2026-05-01T00:00:00Z \| Priority: high/);
   assert.match(output, /------------------------------------$/);
@@ -65,7 +65,7 @@ test('formatTaskList joins tasklist and project includes', () => {
       },
     },
   );
-  assert.match(output, /Seek - Test task\n\nhttps:\/\/base\.test\/app\/tasks\/42/);
+  assert.match(output, /Seek - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)/);
 });
 
 test('formatTaskList omits empty deadline and priority labels', () => {
@@ -87,9 +87,9 @@ test('formatTaskList can duplicate subtasks under their parent for table-like ou
     undefined,
     { duplicateNestedSubtasks: true },
   );
-  assert.match(output, /Unknown project - Parent\n\nhttps:\/\/base\.test\/app\/tasks\/1/);
-  assert.match(output, /Unknown project - Subtask: Child\n\nhttps:\/\/base\.test\/app\/tasks\/2/);
-  assert.match(output, /Unknown project - Child\n\nhttps:\/\/base\.test\/app\/tasks\/2/);
+  assert.match(output, /Unknown project - Parent\n\n\[Parent\]\(https:\/\/base\.test\/app\/tasks\/1\)/);
+  assert.match(output, /Unknown project - Subtask: Child\n\n\[Subtask: Child\]\(https:\/\/base\.test\/app\/tasks\/2\)/);
+  assert.match(output, /Unknown project - Child\n\n\[Child\]\(https:\/\/base\.test\/app\/tasks\/2\)/);
 });
 
 test('formatProjectList uses terminal-detected link format', () => {

@@ -73,7 +73,7 @@ For assigned task/subtask output, use this block format:
 ```text
 Project name - Task name
 
-https://forecom.eu.teamwork.com/app/tasks/123
+[Task name](https://forecom.eu.teamwork.com/app/tasks/123)
 
 Task body
 
