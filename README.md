@@ -1,14 +1,14 @@
-# Teamwork Codex Plugin
+# Teamwork Agent Tools
 
-Codex plugin for working with Teamwork.com tasks and projects from terminal sessions.
+Agent tools for working with Teamwork.com tasks and projects from terminal sessions.
 
 The runtime path is intentionally small:
 
 ```text
-Codex skill -> compiled Node CLI -> Teamwork REST API
+Agent skill -> compiled Node CLI -> Teamwork REST API
 ```
 
-Teamwork MCP may be used during development for discovery, but normal plugin use should go through the compact CLI.
+Teamwork MCP may be used during development for discovery, but normal use should go through the compact CLI.
 
 ## Requirements
 
@@ -31,10 +31,16 @@ For personal/local use, the plugin accepts either:
 
 ## Install For Codex
 
-Fast install:
+Fast install for private repo access via GitHub CLI:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jdrly/teamwork-codex-plugin/main/install.sh | bash
+gh api repos/jdrly/teamwork-agent-tools/contents/install.sh --jq .content | base64 --decode | bash
+```
+
+Fast install if the repo is public:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jdrly/teamwork-agent-tools/main/install.sh | bash
 ```
 
 Safer install:
@@ -42,8 +48,8 @@ Safer install:
 Clone the repo:
 
 ```bash
-git clone https://github.com/jdrly/teamwork-codex-plugin.git
-cd teamwork-codex-plugin
+git clone https://github.com/jdrly/teamwork-agent-tools.git
+cd teamwork-agent-tools
 ```
 
 Install dependencies and build:
@@ -85,7 +91,7 @@ Add these values to `~/.codex/config.toml` under `[shell_environment_policy.set]
 TEAMWORK_URL = "https://your-site.teamwork.com"
 TEAMWORK_BEARER_TOKEN = "your-bearer-token"
 TEAMWORK_API_TOKEN = "your-api-token"
-TEAMWORK_USER_AGENT = "Codex-Teamwork-Plugin/0.1"
+TEAMWORK_USER_AGENT = "Teamwork-Agent-Tools/0.1"
 ```
 
 Notes:
@@ -101,7 +107,7 @@ If you prefer shell env instead of Codex config, export the same variables befor
 export TEAMWORK_URL="https://your-site.teamwork.com"
 export TEAMWORK_BEARER_TOKEN="your-bearer-token"
 export TEAMWORK_API_TOKEN="your-api-token"
-export TEAMWORK_USER_AGENT="Codex-Teamwork-Plugin/0.1"
+export TEAMWORK_USER_AGENT="Teamwork-Agent-Tools/0.1"
 ```
 
 The CLI never prints token values.
@@ -144,7 +150,7 @@ Install from a local checkout:
 This copies:
 
 ```text
-~/.claude/teamwork-codex-plugin
+~/.claude/teamwork-agent-tools
 ~/.claude/skills/teamwork/SKILL.md
 ```
 
@@ -154,7 +160,7 @@ Start Claude Code with the same Teamwork environment variables exported:
 export TEAMWORK_URL="https://your-site.teamwork.com"
 export TEAMWORK_BEARER_TOKEN="your-bearer-token"
 export TEAMWORK_API_TOKEN="your-api-token"
-export TEAMWORK_USER_AGENT="Claude-Code-Teamwork-Plugin/0.1"
+export TEAMWORK_USER_AGENT="Teamwork-Agent-Tools/0.1"
 ```
 
 No Claude Code runtime validation has been performed here.

@@ -75,7 +75,7 @@ function help(): CliResult {
     ok: true,
     type: 'help',
     message: [
-      'Teamwork Codex CLI',
+      'Teamwork Agent CLI',
       '',
       'Commands:',
       '  auth check [--json]',

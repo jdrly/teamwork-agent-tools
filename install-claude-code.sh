@@ -2,7 +2,7 @@
 set -euo pipefail
 
 CLAUDE_HOME="${CLAUDE_HOME:-$HOME/.claude}"
-INSTALL_ROOT="${INSTALL_ROOT:-$CLAUDE_HOME/teamwork-codex-plugin}"
+INSTALL_ROOT="${INSTALL_ROOT:-$CLAUDE_HOME/teamwork-agent-tools}"
 SKILL_ROOT="${SKILL_ROOT:-$CLAUDE_HOME/skills/teamwork}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

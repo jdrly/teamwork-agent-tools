@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/jdrly/teamwork-codex-plugin.git}"
+REPO_URL="${REPO_URL:-https://github.com/jdrly/teamwork-agent-tools.git}"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 INSTALL_ROOT="${INSTALL_ROOT:-$CODEX_HOME/plugins/teamwork}"
 WORKDIR="${WORKDIR:-}"
@@ -86,7 +86,7 @@ if [ -z "$WORKDIR" ]; then
   trap cleanup EXIT
 fi
 
-SOURCE_DIR="$WORKDIR/teamwork-codex-plugin"
+SOURCE_DIR="$WORKDIR/teamwork-agent-tools"
 
 if [ -d "$SOURCE_DIR/.git" ]; then
   git -C "$SOURCE_DIR" pull --ff-only
@@ -106,10 +106,10 @@ CODEX_HOME="$CODEX_HOME" pnpm prepare:local
 ensure_env_key "TEAMWORK_URL" "https://your-site.teamwork.com"
 ensure_env_key "TEAMWORK_BEARER_TOKEN" ""
 ensure_env_key "TEAMWORK_API_TOKEN" ""
-ensure_env_key "TEAMWORK_USER_AGENT" "Codex-Teamwork-Plugin/0.1"
+ensure_env_key "TEAMWORK_USER_AGENT" "Teamwork-Agent-Tools/0.1"
 ensure_skill_entry
 
-log "Installed Teamwork Codex plugin to $INSTALL_ROOT"
+log "Installed Teamwork Agent Tools to $INSTALL_ROOT"
 log "Updated Codex config at $CONFIG_FILE"
 log "Fill missing TEAMWORK_* values in $CONFIG_FILE, then restart Codex."
 log "Verify after restart:"

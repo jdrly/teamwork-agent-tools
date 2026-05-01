@@ -1,10 +1,10 @@
 {
-  "name": "@jdrly/teamwork-codex-plugin",
+  "name": "@jdrly/teamwork-agent-tools",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "bin": {
-    "teamwork-codex": "./dist/cli.js"
+    "teamwork-agent": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

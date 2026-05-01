@@ -3,7 +3,7 @@ import { homedir } from 'node:os';
 import path from 'node:path';
 import type { CacheData, TeamworkConfig } from './types.js';
 
-const DEFAULT_USER_AGENT = 'Codex-Teamwork-Plugin/0.1';
+const DEFAULT_USER_AGENT = 'Teamwork-Agent-Tools/0.1';
 
 export function loadConfig(): TeamworkConfig {
   const baseUrl = stripTrailingSlash(requiredEnv('TEAMWORK_URL'));

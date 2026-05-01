@@ -26,4 +26,4 @@ for (const entry of entries) {
   });
 }
 
-console.log(`Installed Teamwork Codex plugin to ${target}`);
+console.log(`Installed Teamwork Agent Tools to ${target}`);

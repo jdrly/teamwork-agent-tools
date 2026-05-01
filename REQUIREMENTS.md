@@ -1,8 +1,8 @@
-# Teamwork Codex Plugin Requirements
+# Teamwork Agent Tools Requirements
 
 ## Goal
 
-Build a Codex plugin for Teamwork.com that behaves like the existing Freelo skill:
+Build agent tools for Teamwork.com that behaves like the existing Freelo skill:
 
 - Let Codex manage Teamwork tasks/projects from terminal sessions.
 - Keep normal Codex context small.
@@ -41,7 +41,7 @@ Expected local target:
 Source repo target:
 
 ```text
-/Users/jd/Development/personal/teamwork-codex-plugin/
+/Users/jd/Development/personal/teamwork-agent-tools/
 ```
 
 The repo should be the source of truth. The local Codex plugin install can be generated, copied, or symlinked from this repo once implementation starts.
