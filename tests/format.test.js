@@ -4,6 +4,7 @@ import {
   formatProjectList,
   formatTaskDetail,
   formatTaskList,
+  formatCzechDateTime,
   duplicateNestedSubtasks,
   markdownLink,
   stripHtml,
@@ -44,8 +45,16 @@ test('formatTaskList uses requested block format', () => {
   );
   assert.match(output, /^Unknown project - Test task\n\n\[Test task\]\(https:\/\/base\.test\/app\/tasks\/42\)\n\nDeadline:/);
   assert.doesNotMatch(output, /Task body/);
-  assert.match(output, /Deadline: 2026-05-01T00:00:00Z \| Priority: high/);
+  assert.match(output, /Deadline: 1\. 5\. 2026 02:00 \| Priority: high/);
   assert.match(output, /────────────────────────────────────────$/);
+});
+
+test('formatCzechDateTime uses Czech date and 24h Prague time', () => {
+  assert.equal(formatCzechDateTime('2026-04-08T00:00:00Z'), '8. 4. 2026 02:00');
+});
+
+test('formatCzechDateTime keeps invalid dates untouched', () => {
+  assert.equal(formatCzechDateTime('not-a-date'), 'not-a-date');
 });
 
 test('formatTaskList joins tasklist and project includes', () => {

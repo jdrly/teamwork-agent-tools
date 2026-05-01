@@ -27,6 +27,15 @@ export function terminalLink(label: string | number, url: string): string {
 
 const TASK_SEPARATOR_CHAR = '─';
 const MIN_TASK_SEPARATOR_WIDTH = 36;
+const CZECH_DATE_TIME_FORMATTER = new Intl.DateTimeFormat('cs-CZ', {
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'Europe/Prague',
+  hourCycle: 'h23',
+});
 
 export function formatTaskList(
   tasks: TeamworkTask[],
@@ -64,9 +73,15 @@ export function taskSeparator(
 
 function formatTaskMeta(task: TaskSummary): string {
   const parts = [];
-  if (task.dueDate) parts.push(`Deadline: ${task.dueDate}`);
+  if (task.dueDate) parts.push(`Deadline: ${formatCzechDateTime(task.dueDate)}`);
   if (task.priority) parts.push(`Priority: ${task.priority}`);
   return parts.join(' | ');
+}
+
+export function formatCzechDateTime(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return CZECH_DATE_TIME_FORMATTER.format(date);
 }
 
 export function duplicateNestedSubtasks(tasks: TaskSummary[]): TaskSummary[] {
@@ -150,7 +165,7 @@ export function formatTaskDetail(
     `ID: ${task.id}`,
     `Status: ${task.status || 'unknown'}`,
   ];
-  if (task.dueDate) lines.push(`Due: ${task.dueDate}`);
+  if (task.dueDate) lines.push(`Due: ${formatCzechDateTime(task.dueDate)}`);
   if (task.priority) lines.push(`Priority: ${task.priority}`);
   if (summary.project) {
     lines.push(`Project: ${terminalLink(summary.project.name || summary.project.id, summary.project.url)}`);
