@@ -81,6 +81,8 @@ Deadline: 2026-05-01 | Priority: high
 ------------------------------------
 ```
 
+Omit deadline or priority when value is empty. If both are empty, omit the whole line.
+
 Use real Markdown links only when user explicitly asks for chat-rendered links.
 
 Never print token values.

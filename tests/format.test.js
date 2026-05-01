@@ -68,6 +68,15 @@ test('formatTaskList joins tasklist and project includes', () => {
   assert.match(output, /Seek - Test task\n\nhttps:\/\/base\.test\/app\/tasks\/42/);
 });
 
+test('formatTaskList omits empty deadline and priority labels', () => {
+  const output = formatTaskList(
+    [{ id: 42, name: 'Test task', status: 'new' }],
+    'https://base.test',
+  );
+  assert.doesNotMatch(output, /Deadline:/);
+  assert.doesNotMatch(output, /Priority:/);
+});
+
 test('formatTaskList can duplicate subtasks under their parent for table-like output', () => {
   const output = formatTaskList(
     [

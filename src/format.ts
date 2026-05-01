@@ -47,12 +47,19 @@ export function formatTaskList(
         '',
         body,
         '',
-        `Deadline: ${task.dueDate || ''} | Priority: ${task.priority || ''}`,
+        formatTaskMeta(task),
         TASK_SEPARATOR,
-      ];
+      ].filter((line, index, all) => line !== '' || all[index - 1] !== '');
       return lines.join('\n');
     })
     .join('\n');
+}
+
+function formatTaskMeta(task: TaskSummary): string {
+  const parts = [];
+  if (task.dueDate) parts.push(`Deadline: ${task.dueDate}`);
+  if (task.priority) parts.push(`Priority: ${task.priority}`);
+  return parts.join(' | ');
 }
 
 export function duplicateNestedSubtasks(tasks: TaskSummary[]): TaskSummary[] {

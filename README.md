@@ -53,3 +53,5 @@ Task body
 Deadline: 2026-05-01 | Priority: high
 ------------------------------------
 ```
+
+Empty deadline/priority fields are omitted.
